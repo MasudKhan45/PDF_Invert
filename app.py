@@ -23,8 +23,11 @@ app.secret_key = Config.SECRET_KEY
 app.config['MAX_CONTENT_LENGTH'] = Config.MAX_CONTENT_LENGTH
 ALLOWED_EXTENSIONS = {'pdf'}
 
-# Initialize database
-init_database()
+# Initialize database (safe - won't crash if DB init fails)
+try:
+    init_database()
+except Exception as e:
+    print(f"Warning: Database initialization failed: {e}")
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

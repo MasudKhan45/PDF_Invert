@@ -26,8 +26,9 @@ class Config:
     # Premium Token Settings
     PREMIUM_TOKEN_EXPIRY_DAYS = 36500  # ~100 years for "lifetime" access
     
-    # Database
-    DATABASE_PATH = os.path.join(os.path.dirname(__file__), 'premium_users.db')
+    # Database - use /tmp on Vercel (read-only filesystem except /tmp)
+    _is_vercel = os.getenv('VERCEL') or os.getenv('VERCEL_ENV')
+    DATABASE_PATH = '/tmp/premium_users.db' if _is_vercel else os.path.join(os.path.dirname(__file__), 'premium_users.db')
     
     # App Settings
     MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50MB
