@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Invert PDF colors instantly. Transform your PDF documents with our free online PDF color inverter - perfect for dark mode reading and reducing eye strain.">
+    <meta name="keywords" content="PDF inverter, invert PDF colors, PDF color converter, dark mode PDF, PDF tools">
+    <title>PDF Inverter - Transform Your PDFs Instantly</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_client_id }}"
+        crossorigin="anonymous"></script>
+
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body>
+    <div class="stars"></div>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="40" height="40" rx="10" fill="url(#gradient1)" />
+                    <path
+                        d="M15 12H25C26.1 12 27 12.9 27 14V26C27 27.1 26.1 28 25 28H15C13.9 28 13 27.1 13 26V14C13 12.9 13.9 12 15 12Z"
+                        stroke="white" stroke-width="2" stroke-linecap="round" />
+                    <path d="M17 16H23M17 20H23M17 24H21" stroke="white" stroke-width="2" stroke-linecap="round" />
+                    <circle cx="28" cy="12" r="6" fill="#FF6B6B" />
+                    <path d="M25 12L31 12M28 9L28 15" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+                    <defs>
+                        <linearGradient id="gradient1" x1="0" y1="0" x2="40" y2="40">
+                            <stop offset="0%" stop-color="#667eea" />
+                            <stop offset="100%" stop-color="#764ba2" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>PDF Inverter</span>
+            </div>
+            <button class="btn-premium" id="btnPremium" style="display: none;">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 2L12.5 7L18 8L14 12L15 18L10 15L5 18L6 12L2 8L7.5 7L10 2Z" fill="currentColor" />
+                </svg>
+                Go Premium
+            </button>
+        </header>
+
+        <!-- Top Ad Banner (Hidden for Premium Users) -->
+        <div class="ad-container ad-top" id="adTop" style="display: none;">
+            <!-- AdSense Top Banner Ad -->
+            <ins class="adsbygoogle" style="display:block" data-ad-client="{{ adsense_client_id }}"
+                data-ad-slot="YOUR_TOP_AD_SLOT_ID" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 class="hero-title">
+                Transform Your PDFs
+                <span class="gradient-text">Instantly</span>
+            </h1>
+            <p class="hero-subtitle">
+                Invert PDF colors for comfortable dark mode reading. Fast, secure, and completely free.
+            </p>
+        </section>
+
+        <!-- Upload Section -->
+        <section class="upload-section" id="uploadSection">
+            <div class="upload-card" id="uploadCard">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="32" cy="32" r="32" fill="url(#uploadGradient)" opacity="0.1" />
+                            <path d="M32 20V44M20 32L32 20L44 32" stroke="url(#uploadGradient)" stroke-width="3"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <defs>
+                                <linearGradient id="uploadGradient" x1="0" y1="0" x2="64" y2="64">
+                                    <stop offset="0%" stop-color="#667eea" />
+                                    <stop offset="100%" stop-color="#764ba2" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="upload-title">Drop your PDF here</h3>
+                    <p class="upload-subtitle">or click to browse</p>
+                    <input type="file" id="fileInput" accept=".pdf" hidden>
+                    <button class="btn-browse" id="btnBrowse">Choose File</button>
+                </div>
+
+                <!-- Processing State -->
+                <div class="processing-state" id="processingState" style="display: none;">
+                    <div class="spinner"></div>
+                    <h3 class="processing-title">Inverting Your PDF</h3>
+                    <p class="processing-subtitle">This may take a moment...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <!-- Success State -->
+                <div class="success-state" id="successState" style="display: none;">
+                    <div class="success-icon">
+                        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="32" cy="32" r="32" fill="#10b981" opacity="0.1" />
+                            <path d="M20 32L28 40L44 24" stroke="#10b981" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <h3 class="success-title">PDF Inverted Successfully!</h3>
+                    <p class="success-subtitle">Your download will start automatically</p>
+                    <button class="btn-reset" id="btnReset">Invert Another PDF</button>
+                </div>
+
+                <!-- Error State -->
+                <div class="error-state" id="errorState" style="display: none;">
+                    <div class="error-icon">
+                        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="32" cy="32" r="32" fill="#ef4444" opacity="0.1" />
+                            <path d="M24 24L40 40M40 24L24 40" stroke="#ef4444" stroke-width="3"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <h3 class="error-title">Oops! Something went wrong</h3>
+                    <p class="error-subtitle" id="errorMessage">Please try again</p>
+                    <button class="btn-reset" id="btnRetry">Try Again</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Ad Banner (Hidden for Premium Users) -->
+        <div class="ad-container ad-bottom" id="adBottom" style="display: none;">
+            <!-- AdSense Bottom Banner Ad -->
+            <ins class="adsbygoogle" style="display:block" data-ad-client="{{ adsense_client_id }}"
+                data-ad-slot="YOUR_BOTTOM_AD_SLOT_ID" data-ad-format="horizontal"
+                data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Lightning Fast</h3>
+                <p>Process your PDFs in seconds with our optimized engine</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure & Private</h3>
+                <p>Your files are processed securely and never stored</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3>High Quality</h3>
+                <p>Maintains document quality at 300 DPI resolution</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Made with ❤️ for better reading experiences</p>
+        </footer>
+    </div>
+
+    <!-- Premium Modal -->
+    <div class="premium-modal" id="premiumModal" style="display: none;">
+        <div class="premium-modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+
+            <div class="premium-header">
+                <div class="premium-icon">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="32" cy="32" r="32" fill="url(#premiumGradient)" opacity="0.1" />
+                        <path d="M32 10L38 22L52 24L42 34L45 48L32 41L19 48L22 34L12 24L26 22L32 10Z"
+                            fill="url(#premiumGradient)" />
+                        <defs>
+                            <linearGradient id="premiumGradient" x1="0" y1="0" x2="64" y2="64">
+                                <stop offset="0%" stop-color="#667eea" />
+                                <stop offset="100%" stop-color="#764ba2" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h2>Upgrade to Premium</h2>
+                <p class="premium-subtitle">Enjoy an ad-free experience</p>
+            </div>
+
+            <div class="pricing-cards">
+                <!-- Lifetime Plan -->
+                <div class="pricing-card featured" data-plan="lifetime">
+                    <div class="pricing-badge">Best Value</div>
+                    <h3>Lifetime</h3>
+                    <div class="price">
+                        <span class="amount">$4.99</span>
+                    </div>
+                    <p class="price-description">One-time payment</p>
+                    <ul class="features-list">
+                        <li>✓ No ads ever</li>
+                        <li>✓ Lifetime access</li>
+                        <li>✓ Priority support</li>
+                        <li>✓ All future features</li>
+                    </ul>
+                    <button class="btn-select-plan" data-plan="lifetime">Get Lifetime Access</button>
+                </div>
+
+                <!-- Monthly Plan -->
+                <div class="pricing-card" data-plan="monthly">
+                    <h3>Monthly</h3>
+                    <div class="price">
+                        <span class="amount">$1.99</span>
+                        <span class="period">/month</span>
+                    </div>
+                    <p class="price-description">Billed monthly</p>
+                    <ul class="features-list">
+                        <li>✓ No ads</li>
+                        <li>✓ Cancel anytime</li>
+                        <li>✓ Priority support</li>
+                    </ul>
+                    <button class="btn-select-plan" data-plan="monthly">Start Monthly</button>
+                </div>
+
+                <!-- Yearly Plan -->
+                <div class="pricing-card" data-plan="yearly">
+                    <div class="pricing-badge savings">Save 37%</div>
+                    <h3>Yearly</h3>
+                    <div class="price">
+                        <span class="amount">$14.99</span>
+                        <span class="period">/year</span>
+                    </div>
+                    <p class="price-description">Billed annually</p>
+                    <ul class="features-list">
+                        <li>✓ No ads</li>
+                        <li>✓ Best value</li>
+                        <li>✓ Priority support</li>
+                        <li>✓ All future features</li>
+                    </ul>
+                    <button class="btn-select-plan" data-plan="yearly">Start Yearly</button>
+                </div>
+            </div>
+
+            <p class="premium-guarantee">💳 Secure payment powered by Stripe • 🔒 30-day money-back guarantee</p>
+        </div>
+    </div>
+
+    <!-- Success Modal (After Purchase) -->
+    <div class="success-modal" id="successModal" style="display: none;">
+        <div class="success-modal-content">
+            <div class="success-checkmark">✓</div>
+            <h2>Welcome to Premium!</h2>
+            <p>Your premium access has been activated. Enjoy your ad-free experience!</p>
+            <div class="premium-token-display">
+                <label>Your Premium Token:</label>
+                <input type="text" id="premiumTokenDisplay" readonly>
+                <button class="btn-copy-token" id="btnCopyToken">Copy</button>
+            </div>
+            <p class="token-note">Save this token to restore premium on other devices</p>
+            <button class="btn-close-success" id="btnCloseSuccess">Start Using</button>
+        </div>
+    </div>
+
+    <script>const STRIPE_PUBLISHABLE_KEY = "{{ stripe_publishable_key }}";</script>
+    <script>const IS_PREMIUM = {{ 'true' if is_premium else 'false' }};</script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/premium.js') }}"></script>
+</body>
+
+</html>
